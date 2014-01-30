@@ -1,5 +1,6 @@
 var fs = require('fs');
 var path = require('path');
+var http = require('http-request');
 
 /* You will need to reuse the same paths many times over in the course of this sprint.
   Consider calling this function in `request-handler.js` and passing in the necessary
@@ -33,10 +34,22 @@ exports.readListOfUrls = function(list, cb){
   });
 };
 
-exports.isUrlInList = function(){
+exports.isUrlInList = function(url, cb){
+  fs.readFile(this.paths.list, function(err, data){
+    if(err) throw err;
+    data = data.toString().split('\n');
+    for (var i = 0; i < data.length; i++) {
+      if(data[i] === url){
+        cb(true);
+        return;
+      }
+    }
+    cb(false);
+  });
 };
 
 exports.addUrlToList = function(url, cb){
+  console.log('adding: '+url);
   fs.writeFile(this.paths.list, url+'\n', null, null, cb);
 };
 
@@ -44,6 +57,10 @@ exports.isUrlArchived = function(url, cb){
   fs.exists(this.paths.archivedSites+url, cb);
 };
 
-exports.downloadUrls = function(){
+exports.downloadUrls = function(url){
+  http.get(url, function(err,res){
+    if(err) throw err;
+    console.log(res.code, res.headers, res.buffer.toString());
+  });
 };
 

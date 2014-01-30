@@ -16,13 +16,17 @@
         var data = $(this).serialize();
         data = data.split('=')[1];
         $.ajax({
-          url: 'http://127.0.0.1:8080/'+data,
-          type: 'GET',
-          // data: data,
-          contentType: 'text/plain',
-          // success: function(data){console.log(data);},
+          url: '/',
+          type: 'POST',
+          data: data,
+          contentType: 'plain/text',//application/json',
+          success: function(data){
+            window.location.replace(data);
+            // console.log(JSON.stringify(data));
+            // $(document.body).html(data);
+          },
           error: function (data) {
-            console.error('Web-Historian: Failed to get new messages. ERR:' + data);
+            console.error('Web-Historian: Failed to get new messages. ERR:' + JSON.stringify(data));
           }
         });
       });

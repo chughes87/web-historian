@@ -6,17 +6,29 @@ exports.handleRequest = function (req, res) {
   if(req.method === "GET"){
     helpers.serveAssets(res,req.url);
   }else if(req.method === "POST"){
-    res.writeHead(302, helpers.headers);
     var data = "";
     req.on('data', function(chunk) {
       data += chunk;
     });
     req.on('end', function() {
-      data = data.split('=')[1];
-      archive.addUrlToList(data,function(){
-        res.end();
+      archive.isUrlInList(data,function(exists){
+        if(exists){
+          console.log(data);
+          helpers.sendResponse(res, data, 200);
+          // helpers.serveAssets(res, "/"+data);
+        }else{
+          // TODO: redirect to loading screen
+          archive.addUrlToList(data,function(){
+            helpers.sendResponse(res,"",302);
+          });
+          archive.downloadUrls(data);
+        }
       });
     });
   }
+  // else if(req.method === "OPTIONS"){
+  //   res.writeHead(helpers.headers);
+  //   res.end();
+  // }
 };
 
