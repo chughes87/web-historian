@@ -17,6 +17,7 @@ describe("html fetcher helpers", function(){
 
     runs(function(){
       archive.readListOfUrls(archive.paths.list, function(urls){
+        console.log(urls);
         resultArray = urls;
       });
     });

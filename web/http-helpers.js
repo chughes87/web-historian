@@ -12,13 +12,23 @@ exports.headers = headers = {
 
 exports.serveAssets = function(res, asset) {
   res.writeHead(200, headers);
-  fs.readFile(archive.paths.siteAssets+'/'+asset, function(err, data) {
-    if(err) throw err;
-    res.end(data);
-  });
-
-  // Write some code here that helps serve up your static files!
-  // (Static files are things like html (yours or archived from others...), css, or anything that doesn't change often.)
+  if(asset === '/'){
+    fs.readFile(archive.paths.siteAssets+'/index.html', function(err, data) {
+      res.end(data);
+    });
+  }else{
+    archive.isUrlArchived(asset,function(exists){
+      if(exists){
+        fs.readFile(archive.paths.archivedSites+asset, function(err, data) {
+          res.end(data);
+        });
+      }else{
+        res.writeHead(404, headers);
+        res.end();
+        console.log("asset not found!");
+      }
+    });
+  }
 };
 
 // As you progress, keep thinking about what helper functions you can put here!
