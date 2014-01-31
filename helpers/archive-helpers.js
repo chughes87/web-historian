@@ -58,28 +58,3 @@ exports.isUrlArchived = function(url, cb){
     cb(exists, url);
   });
 };
-
-exports.downloadUrls = function(){
-  fs.readFile(this.paths.list, function(err, data){
-    if(err) throw err;
-    var arr = data.toString().split('\n');
-    console.log(arr);
-    for (var i = 0; i < arr.length; i++) {
-      exports.isUrlArchived(arr[i], function(exists, url) {
-        if(!exists) {
-          console.log('url: '+url);
-          http.get({url:'http://'+url}, function(err,res){
-            if(err) throw err;
-            console.log(res.code, res.headers, res.buffer.toString());
-            fs.writeFile(exports.paths.archivedSites+'/'+url,
-              res.code + res.header + res.buffer.toString(), 
-              function(err, data){
-                console.log("SUCCESS!!11!");
-              });
-          });
-        }
-      });
-    }
-  });
-};
-

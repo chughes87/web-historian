@@ -17,13 +17,13 @@ exports.handleRequest = function (req, res) {
         if(exists){
           res.writeHead(302, {Location:data});
           res.end();
-        }else{
+        }
+      });
+      archive.isUrlInList(data,function(exists){
+        if(!exists){
           res.writeHead(302, {Location:'loading.html'});
           res.end();
-          archive.addUrlToList(data, function(){
-            archive.downloadUrls(data);
-          });
-          
+          archive.addUrlToList(data);
         }
       });
     });
