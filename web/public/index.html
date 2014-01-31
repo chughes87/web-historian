@@ -6,31 +6,10 @@
 </head>
 <body>
   Enter a URL here:
-  <form method="POST">
+  <form method="POST" action="/">
     <input type="input" name="url"></input>
   </form>
   <script>
-    $(document).ready(function() {
-      $('form').submit(function(e) {
-        e.preventDefault();
-        var data = $(this).serialize();
-        data = data.split('=')[1];
-        $.ajax({
-          url: '/',
-          type: 'POST',
-          data: data,
-          contentType: 'plain/text',//application/json',
-          success: function(data){
-            window.location.replace(data);
-            // console.log(JSON.stringify(data));
-            // $(document.body).html(data);
-          },
-          error: function (data) {
-            console.error('Web-Historian: Failed to get new messages. ERR:' + JSON.stringify(data));
-          }
-        });
-      });
-    });
-    </script>
+  </script>
 </body>
 </html>

@@ -7,7 +7,7 @@ exports.headers = headers = {
   "access-control-allow-methods": "GET, POST, PUT, DELETE, OPTIONS",
   "access-control-allow-headers": "content-type, accept",
   "access-control-max-age": 10, // Seconds.
-  'Content-Type': "application/json"// "plan/text"
+  "Content-Type": "text/html"
 };
 
 exports.sendResponse = sendResponse = function(response, object, status){
@@ -18,14 +18,13 @@ exports.sendResponse = sendResponse = function(response, object, status){
 
 exports.serveAssets = function(res, asset) {
   if(asset === '/'){
-    fs.readFile(archive.paths.siteAssets+'/index.html', function(err, data) {
+    fs.readFile(archive.paths.siteAssets+'/index.html', function(err, data){
       sendResponse(res, {data:data}, 200);
     });
   }else{
     archive.isUrlArchived(asset,function(exists){
       if(exists){
-        fs.readFile(archive.paths.archivedSites+asset, function(err, data) {
-          var temp = headers;
+        fs.readFile(archive.paths.archivedSites+'/'+asset, function(err, data){
           sendResponse(res, data, 200);
         });
       }else{

@@ -4,24 +4,26 @@ var helpers = require('./http-helpers');
 
 exports.handleRequest = function (req, res) {
   if(req.method === "GET"){
-    helpers.serveAssets(res,req.url);
+    url = req.url.replace(/^\//, "");
+    helpers.serveAssets(res,url);
   }else if(req.method === "POST"){
     var data = "";
     req.on('data', function(chunk) {
       data += chunk;
     });
     req.on('end', function() {
-      archive.isUrlInList(data,function(exists){
+      data = data.split('=')[1];
+      archive.isUrlArchived(data,function(exists){
         if(exists){
-          console.log(data);
-          helpers.sendResponse(res, data, 200);
-          // helpers.serveAssets(res, "/"+data);
+          res.writeHead(302, {Location:data});
+          res.end();
         }else{
-          // TODO: redirect to loading screen
-          archive.addUrlToList(data,function(){
-            helpers.sendResponse(res,"",302);
+          res.writeHead(302, {Location:'loading.html'});
+          res.end();
+          archive.addUrlToList(data, function(){
+            archive.downloadUrls(data);
           });
-          archive.downloadUrls(data);
+          
         }
       });
     });
